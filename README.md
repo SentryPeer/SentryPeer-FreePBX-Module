@@ -14,6 +14,17 @@ This is a module for [FreePBX©](http://www.freepbx.org/ "FreePBX Home Page"). [
 
 ### Why?
 
+```
+  _____            _              _____
+ / ____|          | |            |  __ \
+| (___   ___ _ __ | |_ _ __ _   _| |__) |__  ___ _ __
+ \___ \ / _ \ '_ \| __| '__| | | |  ___/ _ \/ _ \ '__|
+ ____) |  __/ | | | |_| |  | |_| | |  |  __/  __/ |
+|_____/ \___|_| |_|\__|_|   \__, |_|   \___|\___|_|
+                             __/ |
+                            |___/
+```
+
 Use the SentryPeer® FreePBX module to help prevent VoIP cyberattacks, fraudulent VoIP phone calls (toll fraud) and improve cybersecurity by detecting early stage reconnaissance attempts. 
 
 This module queries the SentryPeer Phone Number API when making outbound calls from your FreePBX system. 
