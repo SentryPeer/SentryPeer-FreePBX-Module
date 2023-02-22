@@ -1,0 +1,30 @@
+
+<module>
+  <rawname>sentrypeer</rawname>
+  <repo>standard</repo>
+  <name>SentryPeer</name>
+  <description>Use SentryPeer® to help prevent VoIP cyberattacks, fraudulent VoIP phone calls (toll fraud) and improve cybersecurity by detecting early stage reconnaissance attempts.</description>
+  <category>Connectivity</category>
+  <version>16.0.33</version>
+  <publisher>Ant Networks Ltd.</publisher>
+  <license>AGPLv3</license>
+  <licenselink>http://www.gnu.org/licenses/agpl-3.0.txt</licenselink>
+  <changelog>*16.0.33* Initial release</changelog>
+  <menuitems>
+    <sentrypeer>SentryPeer</sentrypeer>
+  </menuitems>
+  <hooks>
+    <ucp class="Ucp">
+      <method namespace="FreePBX\Modules" class="Sentrypeer" callingMethod="constructModuleConfigPages">ucpConfigPage</method>
+      <method namespace="FreePBX\Modules" class="Sentrypeer" callingMethod="addUser">ucpAddUser</method>
+      <method namespace="FreePBX\Modules" class="Sentrypeer" callingMethod="updateUser">ucpUpdateUser</method>
+      <method namespace="FreePBX\Modules" class="Sentrypeer" callingMethod="delUser">ucpDelUser</method>
+      <method namespace="FreePBX\Modules" class="Sentrypeer" callingMethod="addGroup">ucpAddGroup</method>
+      <method namespace="FreePBX\Modules" class="Sentrypeer" callingMethod="updateGroup">ucpUpdateGroup</method>
+      <method namespace="FreePBX\Modules" class="Sentrypeer" callingMethod="delGroup">ucpDelGroup</method>
+    </ucp>
+  </hooks>
+  <supported>
+    <version>14.0</version>
+  </supported>
+</module>
