@@ -15,8 +15,6 @@ This is a module for [FreePBX©](http://www.freepbx.org/ "FreePBX Home Page"). [
 ### Why?
 
 ```
-SPDX-License-Identifier: AGPL-3.0
-Copyright (c) 2023 Gavin Henry <ghenry@sentrypeer.org>
   _____            _              _____
  / ____|          | |            |  __ \
 | (___   ___ _ __ | |_ _ __ _   _| |__) |__  ___ _ __
@@ -25,6 +23,9 @@ Copyright (c) 2023 Gavin Henry <ghenry@sentrypeer.org>
 |_____/ \___|_| |_|\__|_|   \__, |_|   \___|\___|_|
                              __/ |
                             |___/
+
+SPDX-License-Identifier: AGPL-3.0
+Copyright (c) 2023 Gavin Henry <ghenry@sentrypeer.org>
 ```
 
 Use the SentryPeer® FreePBX module to help prevent VoIP cyberattacks, fraudulent VoIP phone calls (toll fraud) and improve cybersecurity by detecting early stage reconnaissance attempts. 
