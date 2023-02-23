@@ -138,8 +138,8 @@ class Sentrypeer extends \FreePBX_Helpers implements \BMO
 
         $subhead = _('Use SentryPeer® to help prevent VoIP cyberattacks, fraudulent VoIP phone calls (toll fraud) and improve cybersecurity by detecting early stage reconnaissance attempts.');
         $settings = array(
-            'sentrypeer-client-id' => $this->getConfig('sentrypeer-client-id'),
-            'sentrypeer-client-secret' => $this->getConfig('sentrypeer-client-secret'),
+            'sentrypeer-client-id' => $this->getConfig('sentrypeer-client-id') ? $this->getConfig('sentrypeer-client-id') : 'not-found',
+            'sentrypeer-client-secret' => $this->getConfig('sentrypeer-client-secret') ? $this->getConfig('sentrypeer-client-secret') : 'not-found',
         );
         $content = load_view(__DIR__ . '/views/form.php', array('settings' => $settings));
         show_view(__DIR__ . '/views/main.php', array('subhead' => $subhead, 'content' => $content));

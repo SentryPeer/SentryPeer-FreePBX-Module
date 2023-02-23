@@ -30,7 +30,9 @@ Copyright (c) 2023 Gavin Henry <ghenry@sentrypeer.org>
 
 Use the SentryPeer® FreePBX module to help prevent VoIP cyberattacks, fraudulent VoIP phone calls (toll fraud) and improve cybersecurity by detecting early stage reconnaissance attempts. 
 
-This module queries the SentryPeer Phone Number API when making outbound calls from your FreePBX system. 
+This module queries the SentryPeer Phone Number API when making outbound calls from your FreePBX system.
+
+You can sign up for a free SentryPeer account at https://sentrypeer.com
 
 ### Setting up a FreePBX system
 [See our WIKI](http://wiki.freepbx.org/display/FOP/Install+FreePBX)
