@@ -1,4 +1,4 @@
-#!/usr/bin/env php 
+#!/usr/bin/env php
 <?php
 
 require_once "phpagi.php";
@@ -16,14 +16,14 @@ $timeout = 2;
 
 $ch = curl_init();
 
-$headers = ['Content-Type: application/json;charset=utf-8','Accept: application/json;charset=utf-8',
-"Authorization: Bearer $bearer_token"];
+$headers = ['Content-Type: application/json;charset=utf-8', 'Accept: application/json;charset=utf-8',
+    "Authorization: Bearer $bearer_token"];
 
 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 curl_setopt($ch, CURLOPT_USERAGENT, 'SentryPeer-FreePBX-Module/1.0');
 curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
-curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout );
-curl_setopt($ch, CURLOPT_TIMEOUT, $timeout );
+curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
 curl_setopt($ch, CURLOPT_HEADER, FALSE);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 
