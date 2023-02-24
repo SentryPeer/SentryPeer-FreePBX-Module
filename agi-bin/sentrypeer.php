@@ -42,7 +42,7 @@ if ($res_code == 404) {
             $agi->verbose("SentryPeer has not seen this number before. Allowing the call.");
             exit(0);
         } else {
-            $agi->verbose("SentryPeer API call res code is not 404. Stopping the call.");
+            $agi->verbose("SentryPeer has seen this number before. Halting call.");
             exit(1);
         }
     } else {
