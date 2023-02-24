@@ -39,7 +39,7 @@ if ($res_code == 404) {
         $res_code = checkPhoneNumber($sentrypeer, $agi, $phone_number_to_check);
 
         if ($res_code == 404) {
-            $agi->verbose("SentryPeer API call res code is 404. Number not seen before. Allowing the call.");
+            $agi->verbose("SentryPeer has not seen this number before. Allowing the call.");
             exit(0);
         } else {
             $agi->verbose("SentryPeer API call res code is not 404. Stopping the call.");
@@ -50,7 +50,7 @@ if ($res_code == 404) {
         exit(1);
     }
 } else {
-    $agi->verbose("SentryPeer API call res code is not 404. Halt/advise/alert the call.");
+    $agi->verbose("SentryPeer has seen this number before. Halting call.");
     exit(1);
 }
 
