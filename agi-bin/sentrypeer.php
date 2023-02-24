@@ -93,6 +93,11 @@ function checkPhoneNumber($sentrypeer, $agi, $phone_number_to_check)
     curl_setopt($ch, CURLOPT_URL, $phone_number_api . $phone_number_to_check);
 
     $res_body = curl_exec($ch);
+    if (curl_errno($ch)) {
+        $agi->verbose("SentryPeer API call failed: " . curl_error($ch));
+        // Let the call through if the API call fails.
+        exit(0);
+    }
     $res_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
     curl_close($ch);
