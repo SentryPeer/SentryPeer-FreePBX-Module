@@ -13,45 +13,94 @@
                              |___/
 */
 
-require_once "phpagi.php";
+include '/etc/freepbx.conf';
+$agidir = FreePBX::Config()->get('ASTAGIDIR');
+require_once $agidir . "/phpagi.php";
 
 $agi = new AGI();
 $phone_number_to_check = $agi->request['agi_extension'];
 $agi->verbose("Checking phone number [$phone_number_to_check] with the SentryPeer API");
 
-// Get our Bearer token from db (RDMS or k/v one. Not sure yet. Need to request it from Auth0 yet).
-$bearer_token = 'xxx';
+// Get the Bearer token from the FreePBX config
+$sentrypeer = FreePBX::Sentrypeer();
 
-// Move to config?
-$phone_number_api = 'https://sentrypeer.com/api/phone-numbers/';
-$timeout = 2;
+// Act on $res_code being 404 to move on and allow the call.
+// Halt/advise/alert on a 302 (or other status) and request a new Bearer token on a 401.
+$res_code = checkPhoneNumber($sentrypeer, $agi, $phone_number_to_check);
 
-$ch = curl_init();
+if ($res_code == 404) {
+    $agi->verbose("SentryPeer API call res code is 404. Number not seen before. Allowing the call.");
+    exit(0);
+} elseif ($res_code == 401) {
+    $agi->verbose("SentryPeer API call res code is 401. Getting a new Bearer token.");
 
-$headers = ['Content-Type: application/json;charset=utf-8', 'Accept: application/json;charset=utf-8',
-    "Authorization: Bearer $bearer_token"];
+    if ($sentrypeer->getAndSaveAccessToken()) {
+        $agi->verbose("SentryPeer Bearer token is now set. Trying again.");
+        $res_code = checkPhoneNumber($sentrypeer, $agi, $phone_number_to_check);
 
-curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-curl_setopt($ch, CURLOPT_USERAGENT, 'SentryPeer-FreePBX-Module/1.0');
-curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
-curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-curl_setopt($ch, CURLOPT_HEADER, FALSE);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        if ($res_code == 404) {
+            $agi->verbose("SentryPeer API call res code is 404. Number not seen before. Allowing the call.");
+            exit(0);
+        } else {
+            $agi->verbose("SentryPeer API call res code is not 404. Stopping the call.");
+            exit(1);
+        }
+    } else {
+        $agi->verbose("SentryPeer Bearer token is still empty. Aborting.");
+        exit(1);
+    }
+} else {
+    $agi->verbose("SentryPeer API call res code is not 404. Halt/advise/alert the call.");
+    exit(1);
+}
 
-// We need to not query local extensions and other known numbers local to FreePBX. How get? 
+function checkPhoneNumber($sentrypeer, $agi, $phone_number_to_check)
+{
+    $bearer_token = $sentrypeer->getConfig('sentrypeer-access-token');
+
+    if (empty($bearer_token)) {
+        $agi->verbose("SentryPeer Bearer token is empty. Getting a new one.");
+
+        if ($sentrypeer->getAndSaveAccessToken()) {
+            $agi->verbose("SentryPeer Bearer token is now set.");
+        } else {
+            $agi->verbose("SentryPeer Bearer token is still empty. Aborting.");
+            exit(1);
+        }
+    }
+
+    // Set the Bearer token from the FreePBX config again
+    $bearer_token = $sentrypeer->getConfig('sentrypeer-access-token');
+
+    $phone_number_api = 'https://sentrypeer.com/api/phone-numbers/';
+    $timeout = 2;
+
+    $ch = curl_init();
+
+    $headers = ['Content-Type: application/json;charset=utf-8', 'Accept: application/json;charset=utf-8',
+        "Authorization: Bearer $bearer_token"];
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'SentryPeer-FreePBX-Module/1.0');
+    curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+    curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+    curl_setopt($ch, CURLOPT_HEADER, FALSE);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+
+// We need to not query local extensions and other known numbers local to FreePBX. How get?
 // Set a debug option to add a ?request_logger param for SentryPeer support team.
-curl_setopt($ch, CURLOPT_URL, $phone_number_api . $phone_number_to_check);
+    curl_setopt($ch, CURLOPT_URL, $phone_number_api . $phone_number_to_check);
 
-$res_body = curl_exec($ch);
-$res_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $res_body = curl_exec($ch);
+    $res_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-curl_close($ch);
+    curl_close($ch);
 
-$agi->verbose("SentryPeer API call res code: $res_code");
-$agi->verbose("SentryPeer API call res body: $res_body");
+    $agi->verbose("SentryPeer API call res code: $res_code");
+    $agi->verbose("SentryPeer API call res body: $res_body");
 
-// Act on $res_code being 404 to move on and allow the call. Halt/advise/alert on a 302 and request a new Bearer token on a 401.
-
+    return $res_code;
+}
 
 ?>

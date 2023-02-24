@@ -26,17 +26,17 @@
                             aria-hidden="true"></i></a> and enter them below.</p>
 
         </div>
-    <?php endif; ?>
+    <?php else: ?>
+        <?php if ($got_access_token): ?>
+            <div class="alert alert-success" role="alert">
+                <p>You have successfully connected to SentryPeer.</p>
+            </div>
+        <?php else: ?>
+            <div class="alert alert-danger" role="alert">
+                <p>There was a problem connecting to SentryPeer. Please check your Client ID and Client Secret.</p>
+            </div>
+        <?php endif; ?>
 
-    <?php if (!empty($form_feedback)): ?>
-        <div class="alert alert-warning" role="alert">
-            <p><?php echo $form_feedback ?></p>
-        </div>
-    <?php endif; ?>
-    <?php if (!empty($saved)): ?>
-        <div class="alert alert-success" role="alert">
-            <p>Thanks for using SentryPeer! Details saved. Please now make a test phone call.</p>
-        </div>
     <?php endif; ?>
     <div class="element-container">
         <div class="row">

@@ -13,17 +13,6 @@
   <menuitems>
     <sentrypeer>SentryPeer</sentrypeer>
   </menuitems>
-  <hooks>
-    <ucp class="Ucp">
-      <method namespace="FreePBX\Modules" class="Sentrypeer" callingMethod="constructModuleConfigPages">ucpConfigPage</method>
-      <method namespace="FreePBX\Modules" class="Sentrypeer" callingMethod="addUser">ucpAddUser</method>
-      <method namespace="FreePBX\Modules" class="Sentrypeer" callingMethod="updateUser">ucpUpdateUser</method>
-      <method namespace="FreePBX\Modules" class="Sentrypeer" callingMethod="delUser">ucpDelUser</method>
-      <method namespace="FreePBX\Modules" class="Sentrypeer" callingMethod="addGroup">ucpAddGroup</method>
-      <method namespace="FreePBX\Modules" class="Sentrypeer" callingMethod="updateGroup">ucpUpdateGroup</method>
-      <method namespace="FreePBX\Modules" class="Sentrypeer" callingMethod="delGroup">ucpDelGroup</method>
-    </ucp>
-  </hooks>
   <supported>
     <version>14.0</version>
   </supported>

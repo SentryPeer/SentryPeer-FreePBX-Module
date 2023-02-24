@@ -37,6 +37,7 @@ class Sentrypeer extends \FreePBX_Helpers implements \BMO
         out(_("Uninstalling the SentryPeer Module"));
         $this->delConfig('sentrypeer-client-id');
         $this->delConfig('sentrypeer-client-secret');
+        $this->delConfig('sentrypeer-access-token');
     }
 
     public function backup()
@@ -67,41 +68,13 @@ class Sentrypeer extends \FreePBX_Helpers implements \BMO
      */
     public function doDialplanHook(&$ext, $engine, $priority)
     {
-        $ext->addInclude('from-internal-additional', 'sentrypeer-context'); // Add the context to from from-internal
+        $ext->addInclude('from-internal-additional', 'sentrypeer-context'); // Add the context to from-internal
         $mcontext = 'sentrypeer-context';
-        $ext->add($mcontext, '_X!', '1', new \ext_noop('Checking ${EXTEN} with SentryPeer'));
-        $ext->add($mcontext, '_X!', 'n', new \ext_agi('sentrypeer.php, ${EXTEN}'));
+        $ext->add($mcontext, '_X!', '', new \ext_noop('Checking ${EXTEN} with SentryPeer'));
+        $ext->add($mcontext, '_X!', '', new \ext_agi('sentrypeer.php, ${EXTEN}'));
     }
 
     public function doConfigPageInit($page)
-    {
-    }
-
-    public function ucpConfigPage($mode, $user, $action)
-    {
-    }
-
-    public function ucpAddUser($id, $display, $ucpStatus, $data)
-    {
-    }
-
-    public function ucpUpdateUser($id, $display, $ucpStatus, $data)
-    {
-    }
-
-    public function ucpDelUser($id, $display, $ucpStatus, $data)
-    {
-    }
-
-    public function ucpAddGroup($id, $display, $data)
-    {
-    }
-
-    public function ucpUpdateGroup($id, $display, $data)
-    {
-    }
-
-    public function ucpDelGroup($id, $display, $data)
     {
     }
 
@@ -111,11 +84,6 @@ class Sentrypeer extends \FreePBX_Helpers implements \BMO
         switch ($_GET['display']) {
             case 'sentrypeer':
                 $buttons = array(
-                    'delete' => array(
-                        'name' => 'delete',
-                        'id' => 'delete',
-                        'value' => _('Delete')
-                    ),
                     'reset' => array(
                         'name' => 'reset',
                         'id' => 'reset',
@@ -127,9 +95,6 @@ class Sentrypeer extends \FreePBX_Helpers implements \BMO
                         'value' => _('Submit')
                     )
                 );
-                if (empty($_GET['extdisplay'])) {
-                    unset($buttons['delete']);
-                }
                 break;
         }
         return $buttons;
@@ -137,10 +102,8 @@ class Sentrypeer extends \FreePBX_Helpers implements \BMO
 
     public function showPage()
     {
-        dbug($_POST);
-
         $saved = false;
-        $form_errors = array();
+        $got_access_token = false;
         if (isset($_POST['action']) && $_POST['action'] == "save") {
 
             if (isset($_POST['client-id']) && isset($_POST['client-secret'])) {
@@ -152,8 +115,11 @@ class Sentrypeer extends \FreePBX_Helpers implements \BMO
                 $saved = true;
                 unset($_POST);
 
-                // Do we?
+                $got_access_token = $this->getAndSaveAccessToken();
+
                 needreload();
+
+
             }
         }
 
@@ -162,8 +128,58 @@ class Sentrypeer extends \FreePBX_Helpers implements \BMO
             'sentrypeer-client-id' => $this->getConfig('sentrypeer-client-id') ? $this->getConfig('sentrypeer-client-id') : 'not-found',
             'sentrypeer-client-secret' => $this->getConfig('sentrypeer-client-secret') ? $this->getConfig('sentrypeer-client-secret') : 'not-found',
         );
-        $content = load_view(__DIR__ . '/views/form.php', array('settings' => $settings, 'form_errors' => $form_errors, 'saved' => $saved));
+        $content = load_view(__DIR__ . '/views/form.php', array('settings' => $settings, 'saved' => $saved, 'got_access_token' => $got_access_token));
         show_view(__DIR__ . '/views/main.php', array('subhead' => $subhead, 'content' => $content));
+    }
+
+    public function getAndSaveAccessToken(): bool
+    {
+        $client_id = $this->getConfig('sentrypeer-client-id');
+        $client_secret = $this->getConfig('sentrypeer-client-secret');
+
+        $access_token_url = 'https://dev-vtqcrudk2kakzqos.uk.auth0.com/oauth/token';
+        $timeout = 2;
+
+        $ch = curl_init();
+
+        $headers = ['Content-Type: application/json;charset=utf-8', 'Accept: application/json;charset=utf-8'];
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'SentryPeer-FreePBX-Module/1.0');
+        curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+        curl_setopt($ch, CURLOPT_HEADER, FALSE);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_POST, TRUE);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(array(
+            'client_id' => $client_id,
+            'client_secret' => $client_secret,
+            'audience' => 'https://sentrypeer.com/api',
+            'grant_type' => 'client_credentials'
+        )));
+
+        curl_setopt($ch, CURLOPT_URL, $access_token_url);
+
+        $json = curl_exec($ch);
+        $err = curl_error($ch);
+
+        curl_close($ch);
+
+        if ($err) {
+            dbug("cURL Error #:" . $err);
+            return false;
+        } else {
+            $res = json_decode($json, true);
+            if (isset($res['access_token'])) {
+                $this->setConfig('sentrypeer-access-token', $res['access_token']);
+                dbug("Got SentryPeer API access token.");
+                return true;
+            } else {
+                dbug("Error getting access token: " . $json);
+                return false;
+            }
+        }
     }
 
     public function ajaxRequest($req, &$setting)
