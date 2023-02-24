@@ -97,9 +97,6 @@ function checkPhoneNumber($sentrypeer, $agi, $phone_number_to_check)
 
     curl_close($ch);
 
-    $agi->verbose("SentryPeer API call res code: $res_code");
-    $agi->verbose("SentryPeer API call res body: $res_body");
-
     return $res_code;
 }
 

@@ -38,6 +38,7 @@ class Sentrypeer extends \FreePBX_Helpers implements \BMO
         $this->delConfig('sentrypeer-client-id');
         $this->delConfig('sentrypeer-client-secret');
         $this->delConfig('sentrypeer-access-token');
+        $this->delConfig('sentrypeer-setup-complete');
     }
 
     public function backup()
@@ -102,8 +103,8 @@ class Sentrypeer extends \FreePBX_Helpers implements \BMO
 
     public function showPage()
     {
-        $saved = false;
-        $got_access_token = false;
+        $setup_complete = $this->getConfig('sentrypeer-setup-complete');
+        $access_token_issue = false;
         if (isset($_POST['action']) && $_POST['action'] == "save") {
 
             if (isset($_POST['client-id']) && isset($_POST['client-secret'])) {
@@ -112,14 +113,17 @@ class Sentrypeer extends \FreePBX_Helpers implements \BMO
                 $this->setConfig('sentrypeer-client-secret', $_POST['client-secret']);
 
                 dbug("Saved client-id and client-secret.");
-                $saved = true;
                 unset($_POST);
 
                 $got_access_token = $this->getAndSaveAccessToken();
-
-                needreload();
-
-
+                if ($got_access_token) {
+                    $this->setConfig('sentrypeer-setup-complete', true);
+                    $setup_complete = true;
+                    needreload();
+                } else {
+                    $access_token_issue = true;
+                    dbug("Failed to get access token.");
+                }
             }
         }
 
@@ -128,7 +132,7 @@ class Sentrypeer extends \FreePBX_Helpers implements \BMO
             'sentrypeer-client-id' => $this->getConfig('sentrypeer-client-id') ? $this->getConfig('sentrypeer-client-id') : 'not-found',
             'sentrypeer-client-secret' => $this->getConfig('sentrypeer-client-secret') ? $this->getConfig('sentrypeer-client-secret') : 'not-found',
         );
-        $content = load_view(__DIR__ . '/views/form.php', array('settings' => $settings, 'saved' => $saved, 'got_access_token' => $got_access_token));
+        $content = load_view(__DIR__ . '/views/form.php', array('settings' => $settings, 'setup_complete' => $setup_complete, 'access_token_issue' => $access_token_issue));
         show_view(__DIR__ . '/views/main.php', array('subhead' => $subhead, 'content' => $content));
     }
 

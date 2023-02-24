@@ -13,10 +13,20 @@
       data-fpbx-delete="config.php?display=returnontransfer">
     <input type="hidden" name="action" id="action" value="save">
 
-    <?php if (empty($saved)): ?>
+    <?php if ($setup_complete && empty($access_token_issue)): ?>
+        <div class="alert alert-success" role="alert">
+            <p><i class="fa fa-check-circle"></i> You have successfully connected to SentryPeer.</p>
+        </div>
+    <?php elseif (!empty($access_token_issue)): ?>
+        <div class="alert alert-danger" role="alert">
+            <p><i class="fa fa-times-circle"></i> There was a problem connecting to SentryPeer. Please check your
+                Client ID and Client Secret.</p>
+        </div>
+    <?php else: ?>
         <div class="alert alert-info" role="alert">
-            <p>This module requires a free account from the <a href="https://sentrypeer.com" target="_blank"
-                                                               title="SentryPeer website">SentryPeer website<i
+            <p><i class="fa fa-info-circle"></i> This module requires a free account from the <a
+                        href="https://sentrypeer.com" target="_blank"
+                        title="SentryPeer website">SentryPeer website <i
                             class="fa fa-external-link"
                             aria-hidden="true"></i></a>.
                 Once you have created an account, you can generate a Client ID and Client Secret in your <a
@@ -26,18 +36,8 @@
                             aria-hidden="true"></i></a> and enter them below.</p>
 
         </div>
-    <?php else: ?>
-        <?php if ($got_access_token): ?>
-            <div class="alert alert-success" role="alert">
-                <p>You have successfully connected to SentryPeer.</p>
-            </div>
-        <?php else: ?>
-            <div class="alert alert-danger" role="alert">
-                <p>There was a problem connecting to SentryPeer. Please check your Client ID and Client Secret.</p>
-            </div>
-        <?php endif; ?>
-
     <?php endif; ?>
+
     <div class="element-container">
         <div class="row">
             <div class="form-group">
