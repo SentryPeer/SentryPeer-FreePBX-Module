@@ -11,20 +11,33 @@
 
 <form action="" method="post" class="fpbx-submit" autocomplete="off" name="editSentryPeer"
       data-fpbx-delete="config.php?display=returnontransfer">
-    <input type="hidden" name="action" id="action" value="edit">
+    <input type="hidden" name="action" id="action" value="save">
 
-    <div class="alert alert-info">
-        <p>This module requires a free account from the <a href="https://sentrypeer.com" target="_blank"
-                                                           title="SentryPeer website">SentryPeer <i
-                        class="fa fa-external-link"
-                        aria-hidden="true"></i></a> website.
-            Once you have created an account, you can generate a Client ID and Client Secret in your <a
-                    href="https://sentrypeer.com/settings" target="_blank"
-                    title="SentryPeer Account Settings">Settings <i
-                        class="fa fa-external-link"
-                        aria-hidden="true"></i></a> and enter them below.</p>
+    <?php if (empty($saved)): ?>
+        <div class="alert alert-info" role="alert">
+            <p>This module requires a free account from the <a href="https://sentrypeer.com" target="_blank"
+                                                               title="SentryPeer website">SentryPeer website<i
+                            class="fa fa-external-link"
+                            aria-hidden="true"></i></a>.
+                Once you have created an account, you can generate a Client ID and Client Secret in your <a
+                        href="https://sentrypeer.com/settings" target="_blank"
+                        title="SentryPeer Account Settings">Settings <i
+                            class="fa fa-external-link"
+                            aria-hidden="true"></i></a> and enter them below.</p>
 
-    </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!empty($form_feedback)): ?>
+        <div class="alert alert-warning" role="alert">
+            <p><?php echo $form_feedback ?></p>
+        </div>
+    <?php endif; ?>
+    <?php if (!empty($saved)): ?>
+        <div class="alert alert-success" role="alert">
+            <p>Thanks for using SentryPeer! Details saved. Please now make a test phone call.</p>
+        </div>
+    <?php endif; ?>
     <div class="element-container">
         <div class="row">
             <div class="form-group">
@@ -33,7 +46,7 @@
                     <i class="fa fa-question-circle fpbx-help-icon" data-for="client-id"></i>
                 </div>
                 <div class="col-md-9">
-                    <input type="text" class="form-control" id="client-id" name="client-id"
+                    <input type="text" class="form-control confidential" id="client-id" name="client-id"
                            value="<?php echo $settings["sentrypeer-client-id"]; ?>">
                 </div>
                 <div class="col-md-3">
@@ -42,7 +55,7 @@
                     <i class="fa fa-question-circle fpbx-help-icon" data-for="client-secret"></i>
                 </div>
                 <div class="col-md-9">
-                    <input type="text" class="form-control" id="client-secret"
+                    <input type="text" class="form-control confidential" id="client-secret"
                            name="client-secret"
                            value="<?php echo $settings["sentrypeer-client-secret"]; ?>">
                 </div>

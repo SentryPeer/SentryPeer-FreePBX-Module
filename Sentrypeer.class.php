@@ -27,12 +27,14 @@ class Sentrypeer extends \FreePBX_Helpers implements \BMO
 
     public function install()
     {
-        $this->setConfig('sentrypeer-client-id', 'sentrypeer-client-id');
-        $this->setConfig('sentrypeer-client-secret', 'sentrypeer-client-secret');
+        out(_("Installing the SentryPeer Module"));
+        $this->setConfig('sentrypeer-client-id', 'Please enter your SentryPeer Client ID from https://sentrypeer.com/settings');
+        $this->setConfig('sentrypeer-client-secret', 'Please enter your SentryPeer Client Secret from https://sentrypeer.com/settings');
     }
 
     public function uninstall()
     {
+        out(_("Uninstalling the SentryPeer Module"));
         $this->delConfig('sentrypeer-client-id');
         $this->delConfig('sentrypeer-client-secret');
     }
@@ -135,13 +137,32 @@ class Sentrypeer extends \FreePBX_Helpers implements \BMO
 
     public function showPage()
     {
+        dbug($_POST);
+
+        $saved = false;
+        $form_errors = array();
+        if (isset($_POST['action']) && $_POST['action'] == "save") {
+
+            if (isset($_POST['client-id']) && isset($_POST['client-secret'])) {
+
+                $this->setConfig('sentrypeer-client-id', $_POST['client-id']);
+                $this->setConfig('sentrypeer-client-secret', $_POST['client-secret']);
+
+                dbug("Saved client-id and client-secret.");
+                $saved = true;
+                unset($_POST);
+
+                // Do we?
+                needreload();
+            }
+        }
 
         $subhead = _('Use SentryPeer® to help prevent VoIP cyberattacks, fraudulent VoIP phone calls (toll fraud) and improve cybersecurity by detecting early stage reconnaissance attempts.');
         $settings = array(
             'sentrypeer-client-id' => $this->getConfig('sentrypeer-client-id') ? $this->getConfig('sentrypeer-client-id') : 'not-found',
             'sentrypeer-client-secret' => $this->getConfig('sentrypeer-client-secret') ? $this->getConfig('sentrypeer-client-secret') : 'not-found',
         );
-        $content = load_view(__DIR__ . '/views/form.php', array('settings' => $settings));
+        $content = load_view(__DIR__ . '/views/form.php', array('settings' => $settings, 'form_errors' => $form_errors, 'saved' => $saved));
         show_view(__DIR__ . '/views/main.php', array('subhead' => $subhead, 'content' => $content));
     }
 
