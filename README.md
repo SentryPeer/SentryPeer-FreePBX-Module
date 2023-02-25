@@ -34,6 +34,12 @@ This module queries the SentryPeer Phone Number API when making outbound calls f
 
 You can sign up for a free SentryPeer account at https://sentrypeer.com
 
+### Screenshots
+
+![SentryPeer Module Menu](https://raw.githubusercontent.com/sentrypeer/freepbx-sentrypeer/main/assets/img/Screenshot+from+2023-02-23+21-38-23.png)
+![SentryPeer Module Main Screen](https://raw.githubusercontent.com/sentrypeer/freepbx-sentrypeer/main/assets/img/Screenshot+from+2023-02-23+21-38-44.png)
+
+
 ### Setting up a FreePBX system
 [See our WIKI](http://wiki.freepbx.org/display/FOP/Install+FreePBX)
 ### License
