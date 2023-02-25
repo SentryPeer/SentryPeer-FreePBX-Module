@@ -39,6 +39,9 @@ You can sign up for a free SentryPeer account at https://sentrypeer.com
 ![SentryPeer Module Menu](https://raw.githubusercontent.com/SentryPeer/SentryPeer-FreePBX-Module/main/assets/img/Screenshot%20from%202023-02-23%2021-38-23.png)
 ![SentryPeer Module Main Screen](https://raw.githubusercontent.com/SentryPeer/SentryPeer-FreePBX-Module/main/assets/img/Screenshot%20from%202023-02-23%2021-38-44.png)
 
+### Trademark
+
+[**SENTRYPEER** is a registered trademark](https://trademarks.ipo.gov.uk/ipo-tmcase/page/Results/1/UK00003700947) of Gavin Henry
 
 ### Setting up a FreePBX system
 [See our WIKI](http://wiki.freepbx.org/display/FOP/Install+FreePBX)
