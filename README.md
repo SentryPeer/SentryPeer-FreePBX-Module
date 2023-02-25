@@ -36,8 +36,8 @@ You can sign up for a free SentryPeer account at https://sentrypeer.com
 
 ### Screenshots
 
-![SentryPeer Module Menu](https://raw.githubusercontent.com/sentrypeer/freepbx-sentrypeer/main/assets/img/Screenshot+from+2023-02-23+21-38-23.png)
-![SentryPeer Module Main Screen](https://raw.githubusercontent.com/sentrypeer/freepbx-sentrypeer/main/assets/img/Screenshot+from+2023-02-23+21-38-44.png)
+![SentryPeer Module Menu](https://raw.githubusercontent.com/SentryPeer/SentryPeer-FreePBX-Module/main/assets/img/Screenshot%20from%202023-02-23%2021-38-23.png)
+![SentryPeer Module Main Screen](https://raw.githubusercontent.com/SentryPeer/SentryPeer-FreePBX-Module/main/assets/img/Screenshot%20from%202023-02-23%2021-38-44.png)
 
 
 ### Setting up a FreePBX system
