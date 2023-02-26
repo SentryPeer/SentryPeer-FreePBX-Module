@@ -1,5 +1,5 @@
 <?php
-/* SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only  */
+/* SPDX-License-Identifier: AGPL-3.0  */
 /* Copyright (c) 2023 Gavin Henry <ghenry@sentrypeer.org> */
 /*
    _____            _              _____
@@ -69,10 +69,29 @@ class Sentrypeer extends \FreePBX_Helpers implements \BMO
      */
     public function doDialplanHook(&$ext, $engine, $priority)
     {
-        $ext->addInclude('from-internal-additional', 'sentrypeer-context'); // Add the context to from-internal
-        $mcontext = 'sentrypeer-context';
-        $ext->add($mcontext, '_X!', '', new \ext_noop('Checking ${EXTEN} with SentryPeer'));
-        $ext->add($mcontext, '_X!', '', new \ext_agi('sentrypeer.php, ${EXTEN}'));
+        /*
+         * Parts taken from https://git.freepbx.org/projects/FPBXCN/repos/outcnam/browse/Outcnam.class.php#101
+         * as per suggestion from @lgaetz
+         * https://community.freepbx.org/t/custom-module-development-starter-module-to-read-and-publishing-process/88563/17
+         */
+        $context = "macro-dialout-trunk";
+        $dial_macro_exists = false;
+        $exten = "s";
+        $webroot = $this->FreePBX->Config->get('AMPWEBROOT');
+        // the dial macro will only exist if there is at least one outroute defined with a trunk
+        // just checking for the existence of routes and trunks is not sufficient
+        $routes = $this->FreePBX->Core->getAllRoutes();
+        foreach ($routes as $route) {
+            if (!empty($this->FreePBX->Core->getRouteTrunksByID($route['route_id']))) {
+                $dial_macro_exists = true;
+            }
+        }
+        if ($dial_macro_exists) {
+            // splice - https://wiki.freepbx.org/pages/viewpage.action?pageId=98701336
+            $ext->splice($context, $exten, "gocall", new \ext_noop('Checking ${EXTEN} with SentryPeer'), "", 1);
+            $ext->splice($context, $exten, "gocall", new \ext_agi('sentrypeer.php, ${EXTEN}'), "", 2);
+            $ext->splice($context, $exten, "gocall", new \ext_noop('SentryPeer Finished'), "", 3);
+        }
     }
 
     public function doConfigPageInit($page)
