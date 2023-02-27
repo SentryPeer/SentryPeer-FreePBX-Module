@@ -88,8 +88,8 @@ class Sentrypeer extends \FreePBX_Helpers implements \BMO
         }
         if ($dial_macro_exists) {
             // splice - https://wiki.freepbx.org/pages/viewpage.action?pageId=98701336
-            $ext->splice($context, $exten, "gocall", new \ext_noop('Checking ${EXTEN} with SentryPeer'), "", 1);
-            $ext->splice($context, $exten, "gocall", new \ext_agi('sentrypeer.php, ${EXTEN}'), "", 2);
+            $ext->splice($context, $exten, "gocall", new \ext_noop('Checking ${DIAL_NUMBER} with SentryPeer'), "", 1);
+            $ext->splice($context, $exten, "gocall", new \ext_agi('sentrypeer.php, ${DIAL_NUMBER}'), "", 2);
             $ext->splice($context, $exten, "gocall", new \ext_noop('SentryPeer Finished'), "", 3);
         }
     }

@@ -18,7 +18,7 @@ $agidir = FreePBX::Config()->get('ASTAGIDIR');
 require_once $agidir . "/phpagi.php";
 
 $agi = new AGI();
-$phone_number_to_check = $agi->request['agi_extension'];
+$phone_number_to_check = $agi->request['agi_arg_1'];
 $agi->verbose("Checking phone number [$phone_number_to_check] with the SentryPeer API");
 
 // Get the Bearer token from the FreePBX config
