@@ -88,9 +88,16 @@ class Sentrypeer extends \FreePBX_Helpers implements \BMO
         }
         if ($dial_macro_exists) {
             // splice - https://wiki.freepbx.org/pages/viewpage.action?pageId=98701336
-            $ext->splice($context, $exten, "gocall", new \ext_noop('Checking ${DIAL_NUMBER} with SentryPeer'), "", 1);
-            $ext->splice($context, $exten, "gocall", new \ext_agi('sentrypeer.php, ${DIAL_NUMBER}'), "", 2);
+            $ext->splice($context, $exten, '', new \ext_set('ORIGINAL_NUM_FOR_SENTRYPEER', '${ARG2}'), "", 1);
+            $ext->splice($context, $exten, "gocall", new \ext_noop('Checking ${ORIGINAL_NUM_FOR_SENTRYPEER} with SentryPeer'), "", 1);
+            $ext->splice($context, $exten, "gocall", new \ext_agi('sentrypeer.php, ${ORIGINAL_NUM_FOR_SENTRYPEER}'), "", 2);
             $ext->splice($context, $exten, "gocall", new \ext_noop('SentryPeer Finished'), "", 3);
+
+            // Add our own custom context so others can hook into it via extensions_custom.conf
+            $ext->addInclude('macro-dialout-trunk', 'sentrypeer-context', 'For the SentryPeer service - https://sentypeer.com'); // Add the context to from-internal
+            $mcontext = 'sentrypeer-context';
+            $ext->add($mcontext, $exten, '', new \ext_noop('Number found on in the SentryPeer database. Hanging up the call.'));
+            $ext->add($mcontext, $exten, '', new \ext_goto('1', 'h', 'macro-dialout-trunk'));
         }
     }
 

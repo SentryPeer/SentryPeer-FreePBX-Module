@@ -39,6 +39,14 @@ You can sign up for a free SentryPeer account at https://sentrypeer.com
 ![SentryPeer Module Menu](https://raw.githubusercontent.com/SentryPeer/SentryPeer-FreePBX-Module/main/assets/img/Screenshot%20from%202023-02-23%2021-38-23.png)
 ![SentryPeer Module Main Screen](https://raw.githubusercontent.com/SentryPeer/SentryPeer-FreePBX-Module/main/assets/img/Screenshot%20from%202023-02-23%2021-38-44.png)
 
+### To Do
+
+Add options to the SentryPeer module configuration page to allow the user to select the following actions when a number is found to be malicious:
+
+1. [ ] Hangup
+2. [ ] Play a message (from Recordings)
+3. [ ] Send email
+
 ### Trademark
 
 [**SENTRYPEER** is a registered trademark](https://trademarks.ipo.gov.uk/ipo-tmcase/page/Results/1/UK00003700947) of Gavin Henry

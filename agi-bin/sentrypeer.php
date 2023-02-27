@@ -30,7 +30,6 @@ $res_code = checkPhoneNumber($sentrypeer, $agi, $phone_number_to_check);
 
 if ($res_code == 404) {
     $agi->verbose("SentryPeer API call res code is 404. Number not seen before. Allowing the call.");
-    exit(0);
 } elseif ($res_code == 401) {
     $agi->verbose("SentryPeer API call res code is 401. Getting a new Bearer token.");
 
@@ -40,19 +39,18 @@ if ($res_code == 404) {
 
         if ($res_code == 404) {
             $agi->verbose("SentryPeer has not seen this number before. Allowing the call.");
-            exit(0);
         } else {
-            $agi->verbose("SentryPeer has seen this number before. Halting call.");
-            exit(1);
+            $agi->verbose("SentryPeer has seen this number before. Hanging up the call.");
+            $agi->goto_dest('sentrypeer-context', 's', 1);
         }
     } else {
         $agi->verbose("SentryPeer Bearer token is still empty. Aborting.");
-        exit(1);
     }
 } else {
     $agi->verbose("SentryPeer has seen this number before. Halting call.");
-    exit(1);
+    $agi->goto_dest('sentrypeer-context', 's', 1);
 }
+exit(0);
 
 function checkPhoneNumber($sentrypeer, $agi, $phone_number_to_check)
 {
@@ -65,7 +63,7 @@ function checkPhoneNumber($sentrypeer, $agi, $phone_number_to_check)
             $agi->verbose("SentryPeer Bearer token is now set.");
         } else {
             $agi->verbose("SentryPeer Bearer token is still empty. Aborting.");
-            exit(1);
+            exit(0);
         }
     }
 
