@@ -17,11 +17,11 @@ signedby=sign.php
 repo=local
 type=local
 [hashes]
-sentrypeer.sig = 621f203b5865a9371742a1ec42f069a86330b497473dd9b023950a24e7efa424
+sentrypeer.sig = c26dc81700c196d3567b467e4aa80164db7942dd55c71dfdececc1465bf83bbc
 -----BEGIN PGP SIGNATURE-----
 
-iHUEARYIAB0WIQThQMT7NT02jeoJsameibM6MEXxaQUCY/ygYAAKCRCeibM6MEXx
-aVetAQDXfdGr4Bs0XiQcvx/vX9Yj4vykIPm2AQIM/SpQtMmbIgD+KCjdPkB7Ucxx
-6nC9ONZuseTP1Pq9yE2lN1lFVk92LQY=
-=CB5C
+iHUEARYIAB0WIQThQMT7NT02jeoJsameibM6MEXxaQUCY/ymHgAKCRCeibM6MEXx
+aR2WAPsHvsAJpepKyqKJj8FlpR/g8rkLfGMxkIzzyknzj4mUSgD/TVRTNyPtb9Ob
+OCKuAswozijPM4lQE8RDrGlJvUfSiQw=
+=2KXd
 -----END PGP SIGNATURE-----
