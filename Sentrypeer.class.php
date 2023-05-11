@@ -167,7 +167,7 @@ class Sentrypeer extends \FreePBX_Helpers implements \BMO
         $client_id = $this->getConfig('sentrypeer-client-id');
         $client_secret = $this->getConfig('sentrypeer-client-secret');
 
-        $access_token_url = 'https://dev-vtqcrudk2kakzqos.uk.auth0.com/oauth/token';
+        $access_token_url = 'https://authz.sentrypeer.com/oauth/token';
         $timeout = 2;
 
         $ch = curl_init();
