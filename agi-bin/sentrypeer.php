@@ -24,14 +24,14 @@ $agi->verbose("Checking phone number [$phone_number_to_check] with the SentryPee
 // Get the Bearer token from the FreePBX config
 $sentrypeer = FreePBX::Sentrypeer();
 
-// Act on $res_code being 404 to move on and allow the call.
-// Halt/advise/alert on a 302 (or other status) and request a new Bearer token on a 401.
+// Act on $res_code being 404 Not Found to move on and allow the call.
+// Halt/advise/alert on a 200 OK (or other status) and request a new Bearer token on a 401.
 $res_code = checkPhoneNumber($sentrypeer, $agi, $phone_number_to_check);
 
 if ($res_code == 404) {
     $agi->verbose("SentryPeer API call res code is 404. Number not seen before. Allowing the call.");
-} elseif ($res_code == 401) {
-    $agi->verbose("SentryPeer API call res code is 401. Getting a new Bearer token.");
+} elseif ($res_code == 401 || $res_code == 403) {
+    $agi->verbose("SentryPeer API call res code is 401 or 403. Getting a new Bearer token.");
 
     if ($sentrypeer->getAndSaveAccessToken()) {
         $agi->verbose("SentryPeer Bearer token is now set. Trying again.");
@@ -39,17 +39,22 @@ if ($res_code == 404) {
 
         if ($res_code == 404) {
             $agi->verbose("SentryPeer has not seen this number before. Allowing the call.");
-        } else {
+        } elseif ($res_code == 200) {
             $agi->verbose("SentryPeer has seen this number before. Hanging up the call.");
             $agi->goto_dest('sentrypeer-context', 's', 1);
+        } else {
+            $agi->verbose("SentryPeer API unknown response code: $res_code. Allowing the call.");
         }
     } else {
         $agi->verbose("SentryPeer Bearer token is still empty. Aborting.");
     }
-} else {
-    $agi->verbose("SentryPeer has seen this number before. Halting call.");
+} elseif ($res_code == 200) {
+    $agi->verbose("SentryPeer has seen this number before. Hanging up the call.");
     $agi->goto_dest('sentrypeer-context', 's', 1);
+} else {
+    $agi->verbose("SentryPeer API unknown response code: $res_code. Allowing the call.");
 }
+
 exit(0);
 
 function checkPhoneNumber($sentrypeer, $agi, $phone_number_to_check)

@@ -5,10 +5,12 @@
   <name>SentryPeer</name>
   <description>Use SentryPeer® to help prevent VoIP cyberattacks, fraudulent VoIP phone calls (toll fraud) and improve cybersecurity by detecting early stage reconnaissance attempts.</description>
   <category>Connectivity</category>
-  <version>16.0.33</version>
+  <version>16.0.34</version>
   <publisher>Ant Networks Ltd.</publisher>
   <license>AGPLv3</license>
   <licenselink>http://www.gnu.org/licenses/agpl-3.0.txt</licenselink>
+  <changelog>*16.0.34* Now look for a 200 OK from the SentryPeer API for a number being found. If not found, then the number is not in the
+  SentryPeer database.</changelog>
   <changelog>*16.0.33* Initial release</changelog>
   <menuitems>
     <sentrypeer>SentryPeer</sentrypeer>
